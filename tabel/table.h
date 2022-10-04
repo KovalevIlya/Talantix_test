@@ -2,12 +2,9 @@
 #define TABLE_H
 
 #include "cell.h"
-#include "node.h"
 
 #include <QObject>
 #include <QPoint>
-
-class Cell;
 
 struct Node;
 
@@ -31,19 +28,19 @@ public:
     Q_SLOT void setFinish(int row, int column);
 
     Q_SLOT void setCell(int row, int column, Cell cell);
-    Cell cell(int row, int column);
+    Cell cell(int row, int column) const;
     Q_SIGNAL void cellChanged(int row, int column, Cell cell);
 
     Q_SLOT void setColumnCount(int columnCount);
-    int columnCount();
+    int columnCount() const;
     Q_SIGNAL void columnCountChanged(int columnCount);
 
     Q_SLOT void setRowCount(int rowCount);
-    int rowCount();
+    int rowCount() const;
     Q_SIGNAL void rowCountChanged(int rowCount);
 
 private:
-    QList<QPoint> getPath(Node * node);
+    QList<QPoint> getPath(Node *node);
     void clearTree();
     void initTable();
 

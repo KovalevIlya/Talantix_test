@@ -32,7 +32,7 @@ void Cell::setType(Cell::Type type)
     _type = type;
 }
 
-Cell::Type Cell::type()
+Cell::Type Cell::type() const
 {
     return _type;
 }
@@ -44,7 +44,7 @@ void Cell::setColumn(int column)
     _column = column;
 }
 
-int Cell::column()
+int Cell::column() const
 {
     return _column;
 }
@@ -56,7 +56,7 @@ void Cell::setRow(int row)
     _row = row;
 }
 
-int Cell::row()
+int Cell::row() const
 {
     return _row;
 }
@@ -68,7 +68,7 @@ void Cell::setChecking(int checking)
     _checking = checking;
 }
 
-int Cell::checking()
+int Cell::checking() const
 {
     return _checking;
 }

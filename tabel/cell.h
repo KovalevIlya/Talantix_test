@@ -24,16 +24,16 @@ public:
     void resetType();
 
     void setType(Type type);
-    Type type();
+    Type type() const;
 
     void setColumn(int column);
-    int column();
+    int column() const;
 
     void setRow(int row);
-    int row();
+    int row() const;
 
     void setChecking(int checking);
-    int checking();
+    int checking() const;
 
 private:
     Type _tempType = Type::Open;
@@ -42,7 +42,5 @@ private:
     int _column = -1;
     bool _checking = false;
 };
-//Q_DECLARE_METATYPE(Cell)
-
 
 #endif // CELL_H

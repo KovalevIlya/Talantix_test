@@ -1,8 +1,7 @@
 #include "table.h"
+#include "node.h"
 
 #include <QRandomGenerator>
-
-#include <QDebug>
 
 Table::Table(int columnCount, int rowCount, QObject *parent)
     : QObject(parent), _columnCount(columnCount), _rowCount(rowCount)
@@ -30,8 +29,6 @@ QList<QPoint> Table::search()
     _table[_start.x()][_start.y()].setChecking(true);
 
     int i = 0;
-
-    Node *finish;
 
     while(!_tree[i].isEmpty()) {
         _tree.append(QList<Node *>());
@@ -139,7 +136,7 @@ void Table::setCell(int row, int column, Cell cell)
     emit cellChanged(row, column, _table[row][column]);
 }
 
-Cell Table::cell(int row, int column)
+Cell Table::cell(int row, int column) const
 {
     if (!isCorrectIndex(row, column))
         return Cell();
@@ -160,7 +157,7 @@ void Table::setColumnCount(int columnCount)
     emit sizeChanged(_rowCount, _columnCount);
 }
 
-int Table::columnCount()
+int Table::columnCount() const
 {
     return _columnCount;
 }
@@ -178,7 +175,7 @@ void Table::setRowCount(int rowCount)
     emit sizeChanged(_rowCount, _columnCount);
 }
 
-int Table::rowCount()
+int Table::rowCount() const
 {
     return _rowCount;
 }
@@ -204,9 +201,8 @@ void Table::clearTree()
     const int treeCount = _tree.count();
     for (int i = 0; i < treeCount; ++i) {
         const int subtreeCount = _tree[i].count();
-        for (int j = 0; j < subtreeCount; ++j) {
+        for (int j = 0; j < subtreeCount; ++j)
             delete _tree[i][j];
-        }
     }
 
     _tree.clear();
@@ -226,32 +222,6 @@ void Table::initTable()
             line.insert(column, Cell(row, column, type));
         }
         _table.insert(row, line);
-    }
-
-    setStart(0, 0);
-    setFinish(_rowCount - 1, _columnCount - 1);
-
-    for (int row = 0; row < _rowCount; ++row) {
-        QString str = " ";
-        for (int column = 0; column < _columnCount; ++column) {
-            switch (_table[row][column].type()) {
-            case Cell::Type::Open:
-                str += "_ ";
-                break;
-            case Cell::Type::Close:
-                str += "# ";
-                break;
-            case Cell::Type::Start:
-                str += "A ";
-                break;
-            case Cell::Type::Finish:
-                str += "B ";
-                break;
-            default:
-                break;
-            }
-        }
-        qDebug().noquote() << str;
     }
 
     emit sizeChanged(_rowCount, _columnCount);
