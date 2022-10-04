@@ -16,11 +16,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    tabel/cell.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    tabel/node.cpp \
+    tabel/table.cpp
 
 HEADERS += \
-    mainwindow.h
+    tabel/cell.h \
+    mainwindow.h \
+    tabel/node.h \
+    tabel/table.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
