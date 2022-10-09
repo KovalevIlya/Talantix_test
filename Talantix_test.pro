@@ -16,6 +16,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    gui/eventtypechenged.cpp \
+    gui/graphicsrectitem.cpp \
+    gui/graphicsscene.cpp \
     gui/gui.cpp \
     tabel/cell.cpp \
     main.cpp \
@@ -24,6 +27,10 @@ SOURCES += \
     tabel/table.cpp
 
 HEADERS += \
+    global.h \
+    gui/eventtypechenged.h \
+    gui/graphicsrectitem.h \
+    gui/graphicsscene.h \
     gui/gui.h \
     tabel/cell.h \
     mainwindow.h \

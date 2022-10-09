@@ -2,9 +2,11 @@
 #define GUI_H
 
 #include <QWidget>
+#include <QMutex>
 
 class Table;
-class QGraphicsScene;
+class GraphicsScene;
+class QGraphicsItem;
 
 class Gui : public QWidget
 {
@@ -13,10 +15,19 @@ public:
     explicit Gui(Table *table, QWidget *parent = nullptr);
 
     void initScene();
+    Q_SLOT void setPath(const QList<QPoint> &path);
+    void removeStartPath();
+    void search();
+
+    QPoint getTablePoint(const QPointF &point) const;
+    QPointF getScenePoint(const QPoint &point) const;
+    QPointF getLinePoint(const QPoint &point) const;
 
 private:
     Table* _table;
-    QGraphicsScene* _scene;
+    GraphicsScene* _scene;
+    QGraphicsItem *_startPath = nullptr;
+    QMutex _mutex;
 
     int _width = 0;
     int _height = 0;

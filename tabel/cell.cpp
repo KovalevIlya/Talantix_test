@@ -1,6 +1,8 @@
 #include "cell.h"
 
-Cell::Cell(int row, int column, Cell::Type type)
+using namespace CellNS;
+
+Cell::Cell(int row, int column, Type type)
     : _type(type), _tempType(type), _row(row), _column(column)
 {
 
@@ -9,6 +11,7 @@ Cell::Cell(int row, int column, Cell::Type type)
 bool Cell::operator ==(Cell rth)
 {
     if (_type == rth._type
+        && _tempType == rth._tempType
         && _row == rth._row
         && _column == rth._column) {
         return true;
@@ -21,18 +24,19 @@ void Cell::resetType()
     _type = _tempType;
 }
 
-void Cell::setType(Cell::Type type)
+void Cell::setType(Type type)
 {
     if (_type == type)
         return;
 
-    if (type == Type::Start || type == Type::Finish)
-        _tempType = _type;
+    if (type != Type::Start && type != Type::Finish) {
+        _tempType = type;
+    }
 
     _type = type;
 }
 
-Cell::Type Cell::type() const
+Type Cell::type() const
 {
     return _type;
 }

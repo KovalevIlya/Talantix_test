@@ -1,30 +1,30 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include <QObject>
+#include "global.h"
 
 class Cell
 {
-    Q_GADGET
+//    Q_GADGET
 public:
-    enum class Type
-    {
-        Open = 0,
-        Close,
-        Start,
-        Finish,
-    };
-    Q_ENUM(Type)
+//    enum class Type
+//    {
+//        Open = 0,
+//        Close,
+//        Start,
+//        Finish,
+//    };
+//    Q_ENUM(Type)
 
     Cell() = default;
-    explicit Cell(int row, int column, Type type = Type::Open);
+    explicit Cell(int row, int column, CellNS::Type type = CellNS::Type::Open);
 
     bool operator ==(Cell rth);
 
     void resetType();
 
-    void setType(Type type);
-    Type type() const;
+    void setType(CellNS::Type type);
+    CellNS::Type type() const;
 
     void setColumn(int column);
     int column() const;
@@ -35,9 +35,9 @@ public:
     void setChecking(int checking);
     int checking() const;
 
+    CellNS::Type _tempType = CellNS::Type::Open;
 private:
-    Type _tempType = Type::Open;
-    Type _type = Type::Open;
+    CellNS::Type _type = CellNS::Type::Open;
     int _row = -1;
     int _column = -1;
     bool _checking = false;

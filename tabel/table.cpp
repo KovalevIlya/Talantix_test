@@ -22,8 +22,10 @@ void Table::reset(int columnCount, int rowCount)
 
 QList<QPoint> Table::search()
 {
-    if (!isCorrectIndex(_start) || !isCorrectIndex(_finish))
+    if (!isCorrectIndex(_start) || !isCorrectIndex(_finish)) {
+        emit searched({});
         return {};
+    }
 
     _tree.append({ new Node(_start) });
     _table[_start.x()][_start.y()].setChecking(true);
@@ -39,14 +41,17 @@ QList<QPoint> Table::search()
 
             QVector<QPoint> indices = { { x, y + 1 }, { x + 1, y }, { x, y - 1 }, { x - 1, y } };
             for (auto index : indices) {
-                if (index == _finish)
-                    return getPath(new Node(index, _tree[i][j]));
+                if (index == _finish) {
+                    auto path = getPath(new Node(index, _tree[i][j]));
+                    emit searched(path);
+                    return path;
+                }
 
                 if (!isCorrectIndex(index))
                     continue;
 
                 if (!_table[index.x()][index.y()].checking()
-                    && _table[index.x()][index.y()].type() == Cell::Type::Open) {
+                    && _table[index.x()][index.y()].type() == CellNS::Type::Open) {
                     _table[index.x()][index.y()].setChecking(true);
                     _tree[i + 1].append(new Node(index, _tree[i][j]));
                 }
@@ -54,6 +59,7 @@ QList<QPoint> Table::search()
         }
         ++i;
     }
+    emit searched({});
     return {};
 }
 
@@ -85,38 +91,63 @@ void Table::resetChecking()
     }
 }
 
+bool Table::isStart()
+{
+    return isCorrectIndex(_start);
+}
+
 void Table::setStart(int row, int column)
 {
-    if (!isCorrectIndex(row, column))
+
+    if (isCorrectIndex(_start)) {
+        const int x = _start.x();
+        const int y = _start.y();
+
+        _table[x][y].resetType();
+        emit cellChanged(x, y, _table[x][y]);
+    }
+
+    if (!isCorrectIndex(row, column)) {
+        _start = { -1, -1 };
         return;
-
-    if (isCorrectIndex(_start))
-        _table[_start.x()][_start.y()].resetType();
-
-    _table[row][column].resetType();
-    _table[row][column].setType(Cell::Type::Start);
+    }
 
     if (_start == _finish)
-        _finish = { -1, -1 };
+        setFinish(-1, -1);
+
+//    _table[row][column].resetType();
+    _table[row][column].setType(CellNS::Type::Start);
 
     _start = { row, column };
 
     emit cellChanged(row, column, _table[row][column]);
 }
 
+bool Table::isFinish()
+{
+    return isCorrectIndex(_finish);
+}
+
 void Table::setFinish(int row, int column)
 {
-    if (!isCorrectIndex(row, column))
+    if (isCorrectIndex(_finish)) {
+        const int x = _finish.x();
+        const int y = _finish.y();
+
+        _table[x][y].resetType();
+        emit cellChanged(x, y, _table[x][y]);
+    }
+
+    if (!isCorrectIndex(row, column)) {
+        _finish = { -1, -1 };
         return;
-
-    if (isCorrectIndex(_finish))
-        _table[_finish.x()][_finish.y()].resetType();
-
-    _table[row][column].resetType();
-    _table[row][column].setType(Cell::Type::Finish);
+    }
 
     if (_start == _finish)
-        _start = { -1, -1 };
+        setStart(-1, -1);
+
+//    _table[row][column].resetType();
+    _table[row][column].setType(CellNS::Type::Finish);
 
     _finish = { row, column };
 
@@ -213,12 +244,15 @@ void Table::clearTree()
 void Table::initTable()
 {
     _table.clear();
+    _start = { -1, -1 };
+    _finish = { -1, -1 };
     _table.reserve(_rowCount);
+
     for (int row = 0; row < _rowCount; ++row) {
         QVector<Cell> line;
         line.reserve(_columnCount);
         for (int column = 0; column < _columnCount; ++column) {
-            Cell::Type type = static_cast<Cell::Type>(QRandomGenerator::system()->bounded(0, 2));
+            CellNS::Type type = static_cast<CellNS::Type>(QRandomGenerator::system()->bounded(0, 2));
             line.insert(column, Cell(row, column, type));
         }
         _table.insert(row, line);

@@ -16,6 +16,8 @@ public:
     void reset(int columnCount = -1, int rowCount = -1);
     QList<QPoint> search();
 
+    Q_SIGNAL void searched(const QList<QPoint> &path);
+
     bool isCorrectIndex(int row, int column) const;
     bool isCorrectIndex(QPoint index) const;
 
@@ -24,7 +26,9 @@ public:
 
     Q_SIGNAL void sizeChanged(int rowCount, int columnCount);
 
+    bool isStart();
     Q_SLOT void setStart(int row, int column);
+    bool isFinish();
     Q_SLOT void setFinish(int row, int column);
 
     Q_SLOT void setCell(int row, int column, Cell cell);
