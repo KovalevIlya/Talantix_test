@@ -35,20 +35,44 @@ Gui::Gui(Table *table, QWidget *parent)
 
         if (!_table->isStart()) {
             _table->setStart(row, column);
-            if (_table->isFinish())
+            if (_table->isFinish()) {
                 search();
-            else
+            } else {
+                _isFinish = false;
                 removeStartPath();
+            }
         } else if (cell.type() == CellNS::Type::Start) {
             _table->setStart(-1, -1);
             removeStartPath();
-        } else if (cell.type() == CellNS::Type::Finish) {
+        } else if (_isFinish && cell.type() == CellNS::Type::Finish) {
             _table->setFinish(-1, -1);
+            _isFinish = false;
             removeStartPath();
-        } else {
+        } else if (!_isFinish){
             _table->setFinish(row, column);
+            _isFinish = _table->isFinish();
             search();
         }
+    });
+
+    connect(_scene, &GraphicsScene::setFinish, _table, [this](const QPointF &pointF) {
+        const QPoint point = getTablePoint(pointF);
+        const int row = point.x();
+        const int column = point.y();
+
+        if (_isFinish || !_table->isStart() || _table->cell(row, column).type() == CellNS::Type::Start)
+            return;
+
+        _table->setFinish(row, column);
+        search();
+    });
+
+    connect(_scene, &GraphicsScene::removeFinish, _table, [this]() {
+        if (_isFinish)
+            return;
+
+        _table->setFinish(-1, -1);
+        removeStartPath();
     });
 
     connect(_table, &Table::cellChanged,
@@ -66,17 +90,18 @@ Gui::Gui(Table *table, QWidget *parent)
 
     auto sbWidth = new QSpinBox();
     sbWidth->setMinimum(0);
+    sbWidth->setMaximum(250);
     connect(sbWidth, QOverload<int>::of(&QSpinBox::valueChanged), this, [this](int value){
         _width = value;
     });
 
     auto sbHeight = new QSpinBox();
     sbHeight->setMinimum(0);
+    sbHeight->setMaximum(250);
     connect(sbHeight, QOverload<int>::of(&QSpinBox::valueChanged), this, [this](int value){
         _height = value;
     });
 
-    qDebug() << x() << y();
     auto tableView = new QGraphicsView(_scene);
     tableView->setMouseTracking(true);
 
@@ -103,6 +128,7 @@ Gui::Gui(Table *table, QWidget *parent)
 
 void Gui::initScene()
 {
+    _isFinish = false;
     _scene->clear();
     const int rowCount = _table->rowCount();
     for (int row = 0; row < rowCount; ++row) {

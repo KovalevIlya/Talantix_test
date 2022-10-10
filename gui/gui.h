@@ -29,6 +29,8 @@ private:
     QGraphicsItem *_startPath = nullptr;
     QMutex _mutex;
 
+    bool _isFinish = false;
+
     int _width = 0;
     int _height = 0;
 

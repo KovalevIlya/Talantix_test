@@ -43,7 +43,7 @@ public:
     int rowCount() const;
     Q_SIGNAL void rowCountChanged(int rowCount);
 
-private:
+//private:
     QList<QPoint> getPath(Node *node);
     void clearTree();
     void initTable();

@@ -2,6 +2,7 @@
 #include "node.h"
 
 #include <QRandomGenerator>
+#include <QDebug>
 
 Table::Table(int columnCount, int rowCount, QObject *parent)
     : QObject(parent), _columnCount(columnCount), _rowCount(rowCount)
@@ -27,6 +28,7 @@ QList<QPoint> Table::search()
         return {};
     }
 
+    clearTree();
     _tree.append({ new Node(_start) });
     _table[_start.x()][_start.y()].setChecking(true);
 
@@ -59,6 +61,7 @@ QList<QPoint> Table::search()
         }
         ++i;
     }
+
     emit searched({});
     return {};
 }
@@ -112,10 +115,9 @@ void Table::setStart(int row, int column)
         return;
     }
 
-    if (_start == _finish)
+    if (_start == _finish || QPoint(row, column) == _finish)
         setFinish(-1, -1);
 
-//    _table[row][column].resetType();
     _table[row][column].setType(CellNS::Type::Start);
 
     _start = { row, column };
@@ -143,10 +145,9 @@ void Table::setFinish(int row, int column)
         return;
     }
 
-    if (_start == _finish)
+    if (_finish == _start || QPoint(row, column) == _start)
         setStart(-1, -1);
 
-//    _table[row][column].resetType();
     _table[row][column].setType(CellNS::Type::Finish);
 
     _finish = { row, column };
@@ -222,7 +223,6 @@ QList<QPoint> Table::getPath(Node *node)
     }
 
     delete node;
-    clearTree();
 
     return path;
 }

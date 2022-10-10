@@ -19,23 +19,22 @@ void GraphicsRectItem::editType(const CellNS::Type type)
     switch (type) {
     case CellNS::Type::Open:
         brush = QBrush();
+        setBrush(brush);
         text = "";
         break;
     case CellNS::Type::Close:
         brush = QBrush(Qt::DiagCrossPattern);
+        setBrush(brush);
         text = "";
         break;
     case CellNS::Type::Start:
-        brush = QBrush();
         text = "A";
         break;
     case CellNS::Type::Finish:
-        brush = QBrush();
         text = "B";
         break;
     }
 
-    setBrush(brush);
     for (auto item : childItems()) {
         if (auto textItem = static_cast<QGraphicsSimpleTextItem *>(item)) {
             textItem->setText(text);
@@ -60,16 +59,15 @@ bool GraphicsRectItem::sceneEvent(QEvent *event)
 void GraphicsRectItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     emit qobject_cast<GraphicsScene *>(scene())->clickedItem(boundingRect().topLeft());
-//    qDebug() << Q_FUNC_INFO << this->rect();
 
 }
 
 void GraphicsRectItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-//    qDebug() << Q_FUNC_INFO << this->rect();
+    emit qobject_cast<GraphicsScene *>(scene())->setFinish(boundingRect().topLeft());
 }
 
 void GraphicsRectItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-//    qDebug() << Q_FUNC_INFO << this->rect();
+    emit qobject_cast<GraphicsScene *>(scene())->removeFinish();
 }
