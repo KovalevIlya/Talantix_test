@@ -2,7 +2,6 @@
 #include "graphicsscene.h"
 #include "eventtypechenged.h"
 
-#include <QDebug>
 #include <QBrush>
 
 GraphicsRectItem::GraphicsRectItem(const QRectF &rect, const CellNS::Type type,

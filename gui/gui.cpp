@@ -6,14 +6,10 @@
 #include "eventtypechenged.h"
 #include "graphicsview.h"
 
-#include <QGraphicsScene>
-#include <QGraphicsView>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QLabel>
 #include <QLayout>
-#include <QDebug>
-#include <QGraphicsRectItem>
 #include <QMutexLocker>
 #include <QtConcurrent/QtConcurrent>
 

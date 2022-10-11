@@ -2,7 +2,6 @@
 #include "node.h"
 
 #include <QRandomGenerator>
-#include <QDebug>
 
 Table::Table(const int rowCount, const int columnCount, QObject *parent)
     : QObject(parent), _columnCount(columnCount), _rowCount(rowCount)
