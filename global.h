@@ -3,21 +3,23 @@
 
 #include <QObject>
 
+/// Пространство имен клеток лабиринта
 namespace CellNS {
 Q_NAMESPACE
 
+/// Типы клеток
 enum class Type
 {
-    Open,
-    Close,
-    Start,
-    Finish
+    Open, ///< Открыта
+    Close, ///< Заблокирована
+    Start, ///< Начало пути
+    Finish ///< Конец Пути
 };
 Q_ENUM_NS(Type)
 
 }
 
-constexpr int MAX_ROW_COUNT = 100;
-constexpr int MAX_COLUMN_COUNT = 100;
+constexpr int MAX_ROW_COUNT = 100; ///< Максимальное количество строк в лабиринте
+constexpr int MAX_COLUMN_COUNT = 100; ///< Максимальное количество столбцов в лабиринте
 
 #endif // GLOBAL_H
