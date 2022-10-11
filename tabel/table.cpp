@@ -3,28 +3,31 @@
 
 #include <QRandomGenerator>
 
-Table::Table(int columnCount, int rowCount, QObject *parent)
+Table::Table(const int rowCount, const int columnCount, QObject *parent)
     : QObject(parent), _columnCount(columnCount), _rowCount(rowCount)
 {
     initTable();
 }
 
-void Table::reset(int columnCount, int rowCount)
+void Table::reset(const int rowCount, const int columnCount)
 {
-    if (columnCount >= 0)
-        _columnCount = columnCount;
-
     if (rowCount >= 0)
         _rowCount = rowCount;
+
+    if (columnCount >= 0)
+        _columnCount = columnCount;
 
     initTable();
 }
 
 QList<QPoint> Table::search()
 {
-    if (!isCorrectIndex(_start) || !isCorrectIndex(_finish))
+    if (!isCorrectIndex(_start) || !isCorrectIndex(_finish)) {
+        emit searched({});
         return {};
+    }
 
+    clearTree();
     _tree.append({ new Node(_start) });
     _table[_start.x()][_start.y()].setChecking(true);
 
@@ -38,15 +41,19 @@ QList<QPoint> Table::search()
             const int y = _tree[i][j]->index.y();
 
             QVector<QPoint> indices = { { x, y + 1 }, { x + 1, y }, { x, y - 1 }, { x - 1, y } };
-            for (auto index : indices) {
-                if (index == _finish)
-                    return getPath(new Node(index, _tree[i][j]));
+
+            for (const auto index : indices) {
+                if (index == _finish) {
+                    const auto path = getPath(new Node(index, _tree[i][j]));
+                    emit searched(path);
+                    return path;
+                }
 
                 if (!isCorrectIndex(index))
                     continue;
 
                 if (!_table[index.x()][index.y()].checking()
-                    && _table[index.x()][index.y()].type() == Cell::Type::Open) {
+                    && _table[index.x()][index.y()].type() == CellNS::Type::Open) {
                     _table[index.x()][index.y()].setChecking(true);
                     _tree[i + 1].append(new Node(index, _tree[i][j]));
                 }
@@ -54,22 +61,24 @@ QList<QPoint> Table::search()
         }
         ++i;
     }
+
+    emit searched({});
     return {};
 }
 
-bool Table::isCorrectIndex(int row, int column) const
+bool Table::isCorrectIndex(const int row, const int column) const
 {
     if (row < 0 || row >= _rowCount || column < 0 || column >= _columnCount)
         return false;
     return true;
 }
 
-bool Table::isCorrectIndex(QPoint index) const
+bool Table::isCorrectIndex(const QPoint &index) const
 {
     return isCorrectIndex(index.x(), index.y());
 }
 
-void Table::checkCell(int row, int column)
+void Table::checkCell(const int row, const int column)
 {
     if (!isCorrectIndex(row, column))
         return;
@@ -85,45 +94,68 @@ void Table::resetChecking()
     }
 }
 
-void Table::setStart(int row, int column)
+bool Table::isStart() const
 {
-    if (!isCorrectIndex(row, column))
+    return isCorrectIndex(_start);
+}
+
+void Table::setStart(const int row, const int column)
+{
+
+    if (isCorrectIndex(_start)) {
+        const int x = _start.x();
+        const int y = _start.y();
+
+        _table[x][y].resetType();
+        emit cellChanged(x, y, _table[x][y]);
+    }
+
+    if (!isCorrectIndex(row, column)) {
+        _start = { -1, -1 };
         return;
+    }
 
-    if (isCorrectIndex(_start))
-        _table[_start.x()][_start.y()].resetType();
+    if (_start == _finish || QPoint(row, column) == _finish)
+        setFinish(-1, -1);
 
-    _table[row][column].resetType();
-    _table[row][column].setType(Cell::Type::Start);
-
-    if (_start == _finish)
-        _finish = { -1, -1 };
+    _table[row][column].setType(CellNS::Type::Start);
 
     _start = { row, column };
 
     emit cellChanged(row, column, _table[row][column]);
 }
 
-void Table::setFinish(int row, int column)
+bool Table::isFinish() const
 {
-    if (!isCorrectIndex(row, column))
+    return isCorrectIndex(_finish);
+}
+
+void Table::setFinish(const int row, const int column)
+{
+    if (isCorrectIndex(_finish)) {
+        const int x = _finish.x();
+        const int y = _finish.y();
+
+        _table[x][y].resetType();
+        emit cellChanged(x, y, _table[x][y]);
+    }
+
+    if (!isCorrectIndex(row, column)) {
+        _finish = { -1, -1 };
         return;
+    }
 
-    if (isCorrectIndex(_finish))
-        _table[_finish.x()][_finish.y()].resetType();
+    if (_finish == _start || QPoint(row, column) == _start)
+        setStart(-1, -1);
 
-    _table[row][column].resetType();
-    _table[row][column].setType(Cell::Type::Finish);
-
-    if (_start == _finish)
-        _start = { -1, -1 };
+    _table[row][column].setType(CellNS::Type::Finish);
 
     _finish = { row, column };
 
     emit cellChanged(row, column, _table[row][column]);
 }
 
-void Table::setCell(int row, int column, Cell cell)
+void Table::setCell(const int row, int column, const Cell &cell)
 {
     if (!isCorrectIndex(row, column))
         return;
@@ -136,7 +168,7 @@ void Table::setCell(int row, int column, Cell cell)
     emit cellChanged(row, column, _table[row][column]);
 }
 
-Cell Table::cell(int row, int column) const
+Cell Table::cell(const int row, const int column) const
 {
     if (!isCorrectIndex(row, column))
         return Cell();
@@ -144,7 +176,7 @@ Cell Table::cell(int row, int column) const
     return _table[row][column];
 }
 
-void Table::setColumnCount(int columnCount)
+void Table::setColumnCount(const int columnCount)
 {
     if (columnCount < 0 || columnCount == _columnCount)
         return;
@@ -162,7 +194,7 @@ int Table::columnCount() const
     return _columnCount;
 }
 
-void Table::setRowCount(int rowCount)
+void Table::setRowCount(const int rowCount)
 {
     if (rowCount < 0 || rowCount == _rowCount)
         return;
@@ -191,7 +223,6 @@ QList<QPoint> Table::getPath(Node *node)
     }
 
     delete node;
-    clearTree();
 
     return path;
 }
@@ -213,12 +244,15 @@ void Table::clearTree()
 void Table::initTable()
 {
     _table.clear();
+    _start = { -1, -1 };
+    _finish = { -1, -1 };
     _table.reserve(_rowCount);
+
     for (int row = 0; row < _rowCount; ++row) {
         QVector<Cell> line;
         line.reserve(_columnCount);
         for (int column = 0; column < _columnCount; ++column) {
-            Cell::Type type = static_cast<Cell::Type>(QRandomGenerator::system()->bounded(0, 2));
+            CellNS::Type type = static_cast<CellNS::Type>(QRandomGenerator::system()->bounded(0, 2));
             line.insert(column, Cell(row, column, type));
         }
         _table.insert(row, line);
