@@ -78,7 +78,7 @@ bool Table::isCorrectIndex(const QPoint &index) const
     return isCorrectIndex(index.x(), index.y());
 }
 
-void Table::checkCell(const int row, const int column)
+void Table::setCheckingCell(const int row, const int column)
 {
     if (!isCorrectIndex(row, column))
         return;

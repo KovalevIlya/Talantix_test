@@ -3,7 +3,7 @@
 using namespace CellNS;
 
 Cell::Cell(const int row, const int column, const Type type)
-    : _type(type), _tempType(type), _row(row), _column(column)
+    : _type(type), _defaultType(type), _row(row), _column(column)
 {
 
 }
@@ -11,7 +11,7 @@ Cell::Cell(const int row, const int column, const Type type)
 bool Cell::operator ==(const Cell rth) const
 {
     if (_type == rth._type
-        && _tempType == rth._tempType
+        && _defaultType == rth._defaultType
         && _row == rth._row
         && _column == rth._column) {
         return true;
@@ -21,7 +21,7 @@ bool Cell::operator ==(const Cell rth) const
 
 void Cell::resetType()
 {
-    _type = _tempType;
+    _type = _defaultType;
 }
 
 void Cell::setType(const Type type)
@@ -30,7 +30,7 @@ void Cell::setType(const Type type)
         return;
 
     if (type != Type::Start && type != Type::Finish) {
-        _tempType = type;
+        _defaultType = type;
     }
 
     _type = type;
