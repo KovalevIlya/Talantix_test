@@ -2,13 +2,13 @@
 
 using namespace CellNS;
 
-Cell::Cell(int row, int column, Type type)
+Cell::Cell(const int row, const int column, const Type type)
     : _type(type), _tempType(type), _row(row), _column(column)
 {
 
 }
 
-bool Cell::operator ==(Cell rth)
+bool Cell::operator ==(const Cell rth) const
 {
     if (_type == rth._type
         && _tempType == rth._tempType
@@ -24,7 +24,7 @@ void Cell::resetType()
     _type = _tempType;
 }
 
-void Cell::setType(Type type)
+void Cell::setType(const Type type)
 {
     if (_type == type)
         return;
@@ -41,10 +41,11 @@ Type Cell::type() const
     return _type;
 }
 
-void Cell::setColumn(int column)
+void Cell::setColumn(const int column)
 {
     if (_column == column)
         return;
+
     _column = column;
 }
 
@@ -53,10 +54,11 @@ int Cell::column() const
     return _column;
 }
 
-void Cell::setRow(int row)
+void Cell::setRow(const int row)
 {
     if (_row == row)
         return;
+
     _row = row;
 }
 
@@ -65,10 +67,11 @@ int Cell::row() const
     return _row;
 }
 
-void Cell::setChecking(int checking)
+void Cell::setChecking(const int checking)
 {
     if (_checking == checking)
         return;
+
     _checking = checking;
 }
 

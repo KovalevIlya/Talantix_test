@@ -1,8 +1,6 @@
 #ifndef GRAPHICSSCENE_H
 #define GRAPHICSSCENE_H
 
-#include "global.h"
-
 #include <QGraphicsScene>
 
 class GraphicsScene : public QGraphicsScene

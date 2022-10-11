@@ -13,9 +13,11 @@ enum class Type
     Start,
     Finish
 };
-
 Q_ENUM_NS(Type)
 
 }
+
+constexpr int MAX_ROW_COUNT = 100;
+constexpr int MAX_COLUMN_COUNT = 100;
 
 #endif // GLOBAL_H

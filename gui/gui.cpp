@@ -20,6 +20,9 @@
 Gui::Gui(Table *table, QWidget *parent)
     : QWidget(parent), _table(table), _scene(new GraphicsScene(this))
 {
+    _width = _table->columnCount();
+    _height = _table->rowCount();
+
     initScene();
 
     connect(_table, &Table::sizeChanged, _scene, [this]() {
@@ -61,8 +64,10 @@ Gui::Gui(Table *table, QWidget *parent)
         const int row = point.x();
         const int column = point.y();
 
-        if (_isFinish || !_table->isStart() || _table->cell(row, column).type() == CellNS::Type::Start)
+        if (_isFinish || !_table->isStart()
+            || _table->cell(row, column).type() == CellNS::Type::Start) {
             return;
+        }
 
         _table->setFinish(row, column);
         search();
@@ -86,17 +91,21 @@ Gui::Gui(Table *table, QWidget *parent)
 
     auto pbGenerate = new QPushButton(tr("Генерировать"));
     connect(pbGenerate, &QPushButton::clicked, _table, [this]() {
-        _table->reset(_width, _height);
+        _table->reset(_height, _width);
     });
 
     auto sbWidth = new QSpinBox();
     sbWidth->setMinimum(0);
+    sbWidth->setMaximum(MAX_COLUMN_COUNT);
+    sbWidth->setValue(_width);
     connect(sbWidth, QOverload<int>::of(&QSpinBox::valueChanged), this, [this](int value){
         _width = value;
     });
 
     auto sbHeight = new QSpinBox();
     sbHeight->setMinimum(0);
+    sbHeight->setMaximum(MAX_ROW_COUNT);
+    sbHeight->setValue(_height);
     connect(sbHeight, QOverload<int>::of(&QSpinBox::valueChanged), this, [this](int value){
         _height = value;
     });

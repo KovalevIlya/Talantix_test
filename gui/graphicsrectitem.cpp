@@ -5,7 +5,8 @@
 #include <QDebug>
 #include <QBrush>
 
-GraphicsRectItem::GraphicsRectItem(const QRectF &rect, const CellNS::Type type, QGraphicsItem *parent)
+GraphicsRectItem::GraphicsRectItem(const QRectF &rect, const CellNS::Type type,
+                                   QGraphicsItem *parent)
     : QGraphicsRectItem(rect, parent)
 {
     editType(type);
@@ -14,17 +15,14 @@ GraphicsRectItem::GraphicsRectItem(const QRectF &rect, const CellNS::Type type, 
 
 void GraphicsRectItem::editType(const CellNS::Type type)
 {
-    QBrush brush;
     QString text;
     switch (type) {
     case CellNS::Type::Open:
-        brush = QBrush();
-        setBrush(brush);
+        setBrush(QBrush());
         text = "";
         break;
     case CellNS::Type::Close:
-        brush = QBrush(Qt::DiagCrossPattern);
-        setBrush(brush);
+        setBrush(QBrush(Qt::DiagCrossPattern));
         text = "";
         break;
     case CellNS::Type::Start:
@@ -52,22 +50,20 @@ bool GraphicsRectItem::sceneEvent(QEvent *event)
     if (event->type() == EventTypeChenged::type)
         editType(static_cast<EventTypeChenged *>(event)->typeCell());
 
-    QGraphicsRectItem::sceneEvent(event);
-
+    return QGraphicsRectItem::sceneEvent(event);
 }
 
-void GraphicsRectItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void GraphicsRectItem::mousePressEvent(QGraphicsSceneMouseEvent *)
 {
     emit qobject_cast<GraphicsScene *>(scene())->clickedItem(boundingRect().topLeft());
-
 }
 
-void GraphicsRectItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+void GraphicsRectItem::hoverEnterEvent(QGraphicsSceneHoverEvent *)
 {
     emit qobject_cast<GraphicsScene *>(scene())->setFinish(boundingRect().topLeft());
 }
 
-void GraphicsRectItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+void GraphicsRectItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
 {
     emit qobject_cast<GraphicsScene *>(scene())->removeFinish();
 }

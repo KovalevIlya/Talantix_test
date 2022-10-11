@@ -6,7 +6,7 @@
 struct Node
 {
     Node() = delete;
-    Node(QPoint &&index, Node *parent = nullptr);
+    Node(const QPoint &&index, Node *parent = nullptr);
     Node(const QPoint &index, Node *parent = nullptr);
 
     QPoint index;

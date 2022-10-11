@@ -10,7 +10,7 @@ class EventTypeChenged : public QEvent
 public:
     EventTypeChenged(const CellNS::Type typeCell);
 
-    CellNS::Type typeCell();
+    CellNS::Type typeCell() const;
 
     static const int type;
 
