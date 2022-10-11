@@ -17,8 +17,6 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
-
-private:
 };
 
 #endif // GRAPHICSRECTITEM_H

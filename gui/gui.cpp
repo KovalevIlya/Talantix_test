@@ -79,11 +79,9 @@ Gui::Gui(Table *table, QWidget *parent)
 
     connect(_table, &Table::cellChanged,
             _scene, [this](int row, int column, Cell cell) {
-
         _scene->sendEvent(_scene->itemAt(getScenePoint({ row, column }), QTransform()),
                           new EventTypeChenged(cell.type()));
     });
-
 
     auto pbGenerate = new QPushButton(tr("Генерировать"));
     connect(pbGenerate, &QPushButton::clicked, _table, [this]() {
