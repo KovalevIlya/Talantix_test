@@ -4,6 +4,7 @@
 #include "global.h"
 #include "graphicsscene.h"
 #include "eventtypechenged.h"
+#include "graphicsview.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -90,19 +91,17 @@ Gui::Gui(Table *table, QWidget *parent)
 
     auto sbWidth = new QSpinBox();
     sbWidth->setMinimum(0);
-    sbWidth->setMaximum(250);
     connect(sbWidth, QOverload<int>::of(&QSpinBox::valueChanged), this, [this](int value){
         _width = value;
     });
 
     auto sbHeight = new QSpinBox();
     sbHeight->setMinimum(0);
-    sbHeight->setMaximum(250);
     connect(sbHeight, QOverload<int>::of(&QSpinBox::valueChanged), this, [this](int value){
         _height = value;
     });
 
-    auto tableView = new QGraphicsView(_scene);
+    auto tableView = new GraphicsView(_scene);
     tableView->setMouseTracking(true);
 
     auto layRight = new QVBoxLayout();
@@ -129,7 +128,9 @@ Gui::Gui(Table *table, QWidget *parent)
 void Gui::initScene()
 {
     _isFinish = false;
+    removeStartPath();
     _scene->clear();
+
     const int rowCount = _table->rowCount();
     for (int row = 0; row < rowCount; ++row) {
         const int columnount = _table->columnCount();
@@ -171,7 +172,7 @@ void Gui::setPath(const QList<QPoint> &path)
 void Gui::removeStartPath()
 {
     QMutexLocker mutex(&_mutex);
-    if (!_startPath)
+    if (!_scene->items().contains(_startPath))
         return;
 
     _scene->removeItem(_startPath);

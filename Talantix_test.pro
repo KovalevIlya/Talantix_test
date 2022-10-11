@@ -19,6 +19,7 @@ SOURCES += \
     gui/eventtypechenged.cpp \
     gui/graphicsrectitem.cpp \
     gui/graphicsscene.cpp \
+    gui/graphicsview.cpp \
     gui/gui.cpp \
     tabel/cell.cpp \
     main.cpp \
@@ -31,6 +32,7 @@ HEADERS += \
     gui/eventtypechenged.h \
     gui/graphicsrectitem.h \
     gui/graphicsscene.h \
+    gui/graphicsview.h \
     gui/gui.h \
     tabel/cell.h \
     mainwindow.h \
